@@ -148,8 +148,9 @@ footer p{font-size:12px;color:var(--t3)}
         <input type="hidden" name="subject" value="🔔 Nouvelle inscription DevisFlow"/>
         <input type="hidden" name="from_name" value="DevisFlow — Liste d'attente"/>
         <div class="form-row">
-          <input type="email" name="email" placeholder="ton@email.fr" required/>
-          <button type="submit" class="btn-o">Rejoindre gratuitement →</button>
+          <input type="text" name="firstname" placeholder="Ton prénom" required/>
+          <input type="email" name="email" placeholder="ton@email.fr" required style="border-left:1px solid rgba(255,255,255,0.08)"/>
+          <button type="submit" class="btn-o">Rejoindre →</button>
         </div>
       </form>
       <div class="form-note">Gratuit 30 jours · Sans carte bancaire</div>
@@ -308,7 +309,8 @@ footer p{font-size:12px;color:var(--t3)}
         <input type="hidden" name="subject" value="🔔 Nouvelle inscription DevisFlow"/>
         <input type="hidden" name="from_name" value="DevisFlow — Liste d'attente"/>
         <div class="form-row">
-          <input type="email" name="email" placeholder="ton@email.fr" required/>
+          <input type="text" name="firstname" placeholder="Ton prénom" required/>
+          <input type="email" name="email" placeholder="ton@email.fr" required style="border-left:1px solid rgba(255,255,255,0.08)"/>
           <button type="submit" class="btn-o">Je veux tester →</button>
         </div>
       </form>
@@ -330,20 +332,23 @@ async function send(e,sid){
   const btn=f.querySelector('button');
   btn.textContent='Envoi...';
   btn.disabled=true;
+  const firstname=f.querySelector('input[name="firstname"]').value;
+  const email=f.querySelector('input[type="email"]').value;
   try{
     const res=await fetch('https://api.web3forms.com/submit',{
       method:'POST',
       headers:{'Content-Type':'application/json','Accept':'application/json'},
       body:JSON.stringify({
         access_key:'cbf195bb-e563-4b22-bb65-0c2e5bfd3a69',
-        email:f.querySelector('input[type="email"]').value,
-        subject:'🔔 Nouvelle inscription DevisFlow',
-        from_name:'DevisFlow — Liste d\'attente'
+        email:email,
+        firstname:firstname,
+        subject:'🔔 Nouvelle inscription DevisFlow — '+firstname,
+        from_name:'DevisFlow — Liste d\'attente',
+        message:'Prénom : '+firstname+'\nEmail : '+email
       })
     });
     const data=await res.json();
     if(data.success){
-      f.closest('.form-row')? f.querySelector('.form-row').style.display='none' : f.style.display='none';
       f.style.display='none';
       document.getElementById(sid).style.display='block';
     } else {
